@@ -41,6 +41,18 @@ paths:
       responses:
         200:
           description: The temporary API token was successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authorization:
+                    type: string
+                    example: VGFjb3MgYXJlIGRlbGljaW91cwo=
+                  user:
+                    $ref: '#/components/schemas/User'
+                  client:
+                    $ref: '#/components/schemas/Client'
         401:
           description: Incorrect username or password.
         403:
