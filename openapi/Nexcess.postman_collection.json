@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ba1f3914-3bb8-4ac7-96ae-cddba669f5ec",
+		"_postman_id": "06d20bf0-ed9d-4b43-80e6-b9ba32422841",
 		"name": "Nexcess",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -10,6 +10,23 @@
 			"item": [
 				{
 					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1b6b994e-c3ed-46e9-8d83-a1080689ce58",
+								"exec": [
+									"pm.test(\"Process Authorization Token\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    ",
+									"    var data = pm.response.json();",
+									"    pm.environment.set(\"PORTAL_API_TOKEN\", data.authorization);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -39,49 +56,6 @@
 							]
 						},
 						"description": "Client user authentication with a username and password.\n\nA successful response includes a time-limited Bearer token to be included in the Authorization header on subsequent requests.\n\nThis endpoint is mainly intended for use by web applications, which would store the token for use during the user's logged-in session. (When the token expires, requests will recieve 401 responses.) For general API usage, an api token should be used instead. @see api-token:add"
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Users",
-			"item": [
-				{
-					"name": "Get User (self)",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{PORTAL_API_URL}}/v1/user/self",
-							"host": [
-								"{{PORTAL_API_URL}}"
-							],
-							"path": [
-								"v1",
-								"user",
-								"self"
-							]
-						},
-						"description": "Shows information about the currently-authenticated client user."
 					},
 					"response": []
 				}
@@ -320,6 +294,144 @@
 							]
 						},
 						"description": "Deletes an api token.\n\nDelete requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task. @see task:show."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cloud Account",
+			"item": [
+				{
+					"name": "WIP: List Cloud Accounts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PORTAL_API_URL}}/v1/cloud-account",
+							"host": [
+								"{{PORTAL_API_URL}}"
+							],
+							"path": [
+								"v1",
+								"cloud-account"
+							]
+						},
+						"description": "Lists a client's cloud accounts."
+					},
+					"response": []
+				},
+				{
+					"name": "WIP: Add Cloud Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PORTAL_API_URL}}/v1/cloud-account?app_id&cloud_id&domain&install_app=&package_id",
+							"host": [
+								"{{PORTAL_API_URL}}"
+							],
+							"path": [
+								"v1",
+								"cloud-account"
+							],
+							"query": [
+								{
+									"key": "app_id",
+									"value": "",
+									"description": "(required): id of the app (wordpress, magento, etc.) to install on the cloud account."
+								},
+								{
+									"key": "cloud_id",
+									"value": "",
+									"description": "(required): id of the cloud (location) to install the cloud account"
+								},
+								{
+									"key": "domain",
+									"value": "",
+									"description": "(required): domain name for the new cloud account"
+								},
+								{
+									"key": "install_app",
+									"value": "",
+									"description": "(optional): install the app (not all apps are installable)"
+								},
+								{
+									"key": "package_id",
+									"value": "",
+									"description": "(required): id of the virt-guest-cloud service package to order"
+								}
+							]
+						},
+						"description": "Creates a new cloud account and orders an associated service.\n\nAdd requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get User (self)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PORTAL_API_URL}}/v1/user/self",
+							"host": [
+								"{{PORTAL_API_URL}}"
+							],
+							"path": [
+								"v1",
+								"user",
+								"self"
+							]
+						},
+						"description": "Shows information about the currently-authenticated client user."
 					},
 					"response": []
 				}
