@@ -1,0 +1,308 @@
+openapi: 3.0.0
+info:
+  title: Nexcess
+  description: 'TODO: Add Description'
+  contact: {}
+  version: '1.0'
+servers:
+- url: https://v1
+  variables: {}
+paths:
+  /login:
+    post:
+      tags:
+      - Authentication
+      summary: Login
+      description: >-
+        Client user authentication with a username and password.
+        A successful response includes a time-limited Bearer token to be included in the Authorization header on subsequent requests.
+        This endpoint is mainly intended for use by web applications, which would store the token for use during the user's logged-in session. (When the token expires, requests will recieve 401 responses.) For general API usage, an api token should be used instead. @see api-token:add
+      operationId: Login
+      parameters:
+      - name: Accept
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              username: user@example.com
+              password: KlaatuBaradaNikto
+        required: true
+      responses:
+        200:
+          description: ''
+          headers: {}
+      deprecated: false
+  /user/self:
+    get:
+      tags:
+      - Users
+      summary: Get User (self)
+      description: Shows information about the currently-authenticated client user.
+      operationId: GetUser(self)
+      parameters:
+      - name: Content-Type
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      - name: Accept
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      responses:
+        200:
+          description: ''
+          headers: {}
+      deprecated: false
+  /api-token:
+    post:
+      tags:
+      - API Tokens
+      summary: Create API Token
+      description: >-
+        Creates a new api token. 
+        The new api token is returned in the response payload. 
+        This is the only time it will be accessible to the user; it will never be displayed again.
+      operationId: CreateApiToken
+      parameters:
+      - name: Accept
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAPITokenRequest'
+            example:
+              name: test-name
+        required: true
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIToken'
+        401:
+          description: Invalid username or password.
+        422:
+          description: Missing field.
+      deprecated: false
+    get:
+      tags:
+      - API Tokens
+      summary: List API Tokens
+      description: Lists api tokens that belong to the logged-in user.
+      operationId: ListApiTokens
+      parameters:
+      - name: Content-Type
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      - name: Accept
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      responses:
+        200:
+          description: ''
+          headers: {}
+      deprecated: false
+  /api-token/{token_id}:
+    get:
+      tags:
+      - API Tokens
+      summary: Get API Token
+      description: Shows an api token.
+      operationId: GetApiToken
+      parameters:
+      - name: Content-Type
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      - name: Accept
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      responses:
+        200:
+          description: ''
+          headers: {}
+      deprecated: false
+    post:
+      tags:
+      - API Tokens
+      summary: Update API Token
+      description: >-
+        Edits an api token.
+        Edit requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task. @see task:show.
+      operationId: UpdateApiToken
+      parameters:
+      - name: Accept
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAPITokenRequest'
+            example:
+              name: test-name
+        required: true
+      responses:
+        200:
+          description: ''
+          headers: {}
+      deprecated: false
+    delete:
+      tags:
+      - API Tokens
+      summary: Delete API Token
+      description: >-
+        Edits an api token.
+        Edit requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task. @see task:show.
+      operationId: DeleteApiToken
+      parameters:
+      - name: Content-Type
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      - name: Accept
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      responses:
+        200:
+          description: ''
+          headers: {}
+      deprecated: false
+components:
+  schemas:
+    APIToken:
+      type: object
+      additionalProperties: false
+      propterties:
+        id:
+          type: integer
+          example: 16
+          description: The id of the API token.
+        identity:
+          type: string
+          example: chuck
+          description: The identity of the API token.
+        name:
+          type: string
+          example: chuck
+          description: The name of the API token.
+        token:
+          type: string
+          example: VGFjb3MgYXJlIGRlbGljaW91cwo=
+          description: The name of the API token.
+    LoginRequest:
+      title: LoginRequest
+      required:
+      - username
+      - password
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      example:
+        username: user@example.com
+        password: KlaatuBaradaNikto
+    CreateAPITokenRequest:
+      title: CreateAPITokenRequest
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+      example:
+        name: test-name
+    UpdateAPITokenRequest:
+      title: UpdateAPITokenRequest
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+      example:
+        name: test-name
+  securitySchemes:
+    httpBearer:
+      type: http
+      scheme: bearer
+security:
+- httpBearer: []
+tags:
+- name: Authentication
+- name: Users
+- name: API Tokens
