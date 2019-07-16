@@ -40,8 +40,11 @@ paths:
         required: true
       responses:
         200:
-          description: ''
-          headers: {}
+          description: The temporary API token was successfully created.
+        401:
+          description: Incorrect username or password.
+        403:
+          description: User cannot log in as requested client
       deprecated: false
   /user/self:
     get:
@@ -71,8 +74,26 @@ paths:
           example: application/json
       responses:
         200:
-          description: ''
-          headers: {}
+          description: Got a current API User.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  password:
+                    $ref: '#/components/schemas/Password'
+                  permissions:
+                    $ref: '#/components/schemas/UserPermissions'
+                  settings:
+                    $ref: '#/components/schemas/UserSettings'
+                  resources:
+                    $ref: '#/components/schemas/UserResources'
+        401:
+          description: Not logged in.
+        403:
+          description: Insufficient permissions.
       deprecated: false
   /api-token:
     post:
@@ -242,9 +263,177 @@ paths:
       deprecated: false
 components:
   schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 27767
+        identity:
+          type: string
+          example: Annabel Whyman - user@nocworx.com
+        first_name:
+          type: string
+          example: Annabel
+        last_name:
+          type: string
+          example: Whyman
+        activated:
+          type: boolean
+        beta_tester:
+          type: boolean
+        email:
+          type: string
+          format: email
+        verified:
+          type: boolean
+        status:
+          type: enum
+          example: active
+          items:
+            - active
+        client:
+          $ref: '#/components/schemas/Client'
+        is_owner:
+          type: boolean
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+        access:
+          type: object
+          properties:
+            area:
+              type: string
+              example: extranet
+            company:
+              $ref: '#/components/schemas/Client'
+            locked:
+              type: boolean
+            login_enable_date:
+              type: integer
+              example: 1559822176
+    UserPermissions:
+      type: object
+      properties:
+        ACCOUNT:
+          type: integer
+          example: 6
+        USERS:
+          type: integer
+          example: 7
+        USER-ROLES:
+          type: integer
+          example: 7
+        ADDRESSES:
+          type: integer
+          example: 7
+        TICKETS:
+          type: integer
+          example: 6
+        INVOICES:
+          type: integer
+          example: 4
+        PAYMENTS:
+          type: integer
+          example: 6
+        CREDITS:
+          type: integer
+          example: 4
+        ORDERS:
+          type: integer
+          example: 6
+        CREDITCARDS:
+          type: integer
+          example: 7
+        AFFILIATE-SETTINGS:
+          type: integer
+          example: 7
+        SERVICES:
+          type: integer
+          example: 7
+        DNS:
+          type: integer
+          example: 7
+        BILLING:
+          type: integer
+          example: 4
+        TECHNICAL:
+          type: integer
+          example: 4
+        PUBLIC:
+          type: integer
+          example: 7
+    UserSettings:
+      type: object
+      properties:
+        client-user.pagination.perpage:
+          type: integer
+          example: 25
+        client-user.login.alert.unknown-device:
+          type: iteger
+          example: 1
+        client-user.login.password-blacklist:
+          type: string
+          example: "qwertyasdfzxcvbn\r\ncorrecthorsebatterystaple\r\nnexcess\r\nthermo"
+        client-user.login.password-check-history:
+          type: integer
+          example: 0
+        client-user.login.password-expires:
+          type: integer
+          example: 0
+        client-user.login.password-strength:
+          type: integer
+          example: 3
+        feedback_department:
+          type: integer
+        perfectaudience:
+          type: integer
+    Password:
+      type: object
+      properties:
+        expired:
+          type: boolean
+        expires_in:
+          type: integer
+          example: 0
+    UserResources:
+      type: object
+      properties:
+        knowledgebase:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Knowledge Library
+            link:
+              type: string
+              format: uri
+        git_access_tokens:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitAccessToken'
+    GitAccessToken:
+      type: object
+      properties:
+        id:
+          type: integer
+        identity:
+          type: string
+          example: myidentity
+    Client:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 34050
+          description: ID of the client.
+        identity:
+          type: string
+          example: Superuser
+          description: Identity of the client.
     APIToken:
       type: object
-      additionalProperties: false
       propterties:
         id:
           type: integer
@@ -271,8 +460,16 @@ components:
       properties:
         username:
           type: string
+          description: Email address of the user.
         password:
           type: string
+          description: The user's password.
+        code:
+          type: string
+          description: 2FA code enabled/required by client settings.
+        client_id:
+          type: string
+          description: ID of client account to log in as. Users can belong to more than one client account. If not specified, logs in as the most recently logged-in client.
       example:
         username: user@example.com
         password: KlaatuBaradaNikto
