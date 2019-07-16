@@ -119,7 +119,7 @@ paths:
         required: true
       responses:
         200:
-          description: ''
+          description: 'Successfully created API token.'
           content:
             application/json:
               schema:
@@ -154,10 +154,33 @@ paths:
         schema:
           type: string
           example: application/json
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/pageSize'
+      - $ref: '#/components/parameters/sortOrder'
+      - $ref: '#/components/parameters/sortBy'
+      - name: filter
+        in: query
+        schema:
+          type: enum
+          example: name
+          items:
+            - name
+            - id
       responses:
         200:
-          description: ''
-          headers: {}
+          description: Successfully retrieved API tokens.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/APIToken'
+        401:
+          description: Not logged in.
+        416:
+          description: Bad range/page number/page size.
+        422:
+          description: Invalid input.
       deprecated: false
   /api-token/{token_id}:
     get:
@@ -320,10 +343,8 @@ paths:
           example: application/json
       - $ref: '#/components/parameters/page'
       - $ref: '#/components/parameters/pageSize'
+      - $ref: '#/components/parameters/sortOrder'
       - $ref: '#/components/parameters/sortBy'
-      - sortBy:
-          type: string
-        required: true
       responses:
         200:
           description: Successfully retrieved clound accounts.
@@ -356,9 +377,9 @@ components:
       schema:
         type: integer
         default: 100
-    sortBy:
+    sortOrder:
       in: query
-      name: sortBy
+      name: sortOrder
       description: The requested page number
       schema:
         type: enum
@@ -366,6 +387,11 @@ components:
         items:
           - ASC
           - DESC
+    sortBy:
+      name: sortBy
+      description: Field to sort by.
+      in: query
+      example: name
   schemas:
     CloudAccount:
       type: object
