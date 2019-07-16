@@ -53,25 +53,6 @@ paths:
       summary: Get User (self)
       description: Shows information about the currently-authenticated client user.
       operationId: GetUser(self)
-      parameters:
-      - name: Content-Type
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
-      - name: Accept
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
       responses:
         200:
           description: Got a current API User.
@@ -261,8 +242,172 @@ paths:
           description: ''
           headers: {}
       deprecated: false
+  /cloud-account:
+    post:
+      tags:
+      - Cloud Accounts
+      summary: Create Cloud Account
+      description: >-
+        Creates a new cloud account and orders an associated service.
+        Add requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task. @see task:show.
+      operationId: CreateCloudAccount
+      parameters:
+      - name: Accept
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCloudAccountRequest'
+        required: true
+      responses:
+        202:
+          description: Successfully creating clound account.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 12
+                  identity:
+                    type: string
+                    example: cloud-account:add (pending)
+        401:
+          description: Not logged in
+        403:
+          description: Insufficient Permissions
+        422:
+          description: Invalid Inputs
+      deprecated: false
+    get:
+      post:
+      tags:
+      - Cloud Accounts
+      summary: List Cloud Accounts
+      description: Lists a client's cloud accounts.
+      operationId: ListCloudAccounts
+      parameters:
+      - name: Accept
+        in: header
+        description: ''
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: application/json
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/pageSize'
+      - $ref: '#/components/parameters/sortBy'
+      - sortBy:
+          type: string
+        required: true
+      responses:
+        200:
+          description: Successfully retrieved clound accounts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CloudAccount'
+        401:
+          description: Not logged in
+        403:
+          description: Insufficient Permissions
+        416:
+          description: Bad range/page number/page size
+      deprecated: false
 components:
+  parameters:
+    page:
+      in: query
+      name: page
+      description: The requested page number
+      schema:
+        type: integer
+        default: 1
+    pageSize:
+      in: query
+      name: page_size
+      description: The size of each requested page
+      schema:
+        type: integer
+        default: 100
+    sortBy:
+      in: query
+      name: sortBy
+      description: The requested page number
+      schema:
+        type: enum
+        example: ASC
+        items:
+          - ASC
+          - DESC
   schemas:
+    CloudAccount:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 91011
+        identity:
+          type: string
+          example: cloud-account.example.com
+        domain:
+          type: string
+          example: cloud-account.example.com
+        temp_domain:
+          type: string
+          example: fe12c2ad4e.nxcli.net
+        state:
+          type: enum
+          example: stable
+          items:
+            - stable
+        ip:
+          type: string
+          format: ipv4
+          example: 203.0.113.1
+        app:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 123
+            identity:
+              type: string
+              example: flexible
+        location:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 45
+            identity:
+              type: string
+              example: us-midwest-1
+        package:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 678
+            identity:
+              type: string
+              example: nc.small
+        parent_account:
+          type: integer
     User:
       type: object
       properties:
@@ -493,6 +638,30 @@ components:
           type: string
       example:
         name: test-name
+    CreateCloudAccountRequest:
+      title: CreateCloudAccountRequest
+      required:
+      - app_id 
+      - cloud_id 
+      - domain 
+      - install_app
+      - package_id
+      type: object
+      properties:
+        app_id:
+          type: integer
+          example: 123
+        cloud_id:
+          type: integer
+          example: 45
+        domain:
+          type: integer
+          example: cloud-account.example.com
+        install_app:
+          type: boolean
+        package_id:
+          type: integer
+          example: 678
   securitySchemes:
     httpBearer:
       type: http

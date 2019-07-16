@@ -10,18 +10,38 @@
 			"item": [
 				{
 					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dd3d1225-df97-4c8e-94ad-465db58d9b6e",
+								"exec": [
+									"pm.test(\"Process Authorization Token\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    ",
+									"    var data = pm.response.json();",
+									"    pm.environment.set(\"PORTAL_API_TOKEN\", data.authorization);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							},
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -324,6 +344,91 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Cloud Account",
+			"item": [
+				{
+					"name": "Create Clout Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"app_id\": 123,\n\t\"cloud_id\": 45,\n\t\"domain\": \"cloud-account.example.com\",\n\t\"install_app\": true,\n\t\"package_id\": 678\n}"
+						},
+						"url": {
+							"raw": "{{PORTAL_API_URL}}/v1/cloud-account",
+							"host": [
+								"{{PORTAL_API_URL}}"
+							],
+							"path": [
+								"v1",
+								"cloud-account"
+							]
+						},
+						"description": "Creates a new cloud account and orders an associated service.\n\nAdd requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task. @see task:show."
+					},
+					"response": []
+				},
+				{
+					"name": "List Cloud Accounts",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PORTAL_API_URL}}/v1/cloud-account",
+							"host": [
+								"{{PORTAL_API_URL}}"
+							],
+							"path": [
+								"v1",
+								"cloud-account"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{PORTAL_API_TOKEN}}",
+						"type": "string"
+					}
+				]
+			}
 		}
 	],
 	"auth": {
@@ -360,31 +465,31 @@
 	],
 	"variable": [
 		{
-			"id": "cfc0f1f6-7270-4e97-9c92-27d0a38b1135",
+			"id": "475537a1-927a-4559-adad-f3568e646cce",
 			"key": "PORTAL_API_URL",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "6419b07e-0faf-48b5-99ab-65732da00181",
+			"id": "66b3bc9a-698c-4f29-9dbe-87e3c0325209",
 			"key": "USERNAME",
 			"value": "user@example.com",
 			"type": "string"
 		},
 		{
-			"id": "a6f41a73-2ea8-4fb9-b6c6-70385bd108c1",
+			"id": "da04c066-e09f-4484-85b5-433c0fc8d76e",
 			"key": "PASSWORD",
 			"value": "KlaatuBaradaNikto",
 			"type": "string"
 		},
 		{
-			"id": "d193a4a1-c869-45a6-bf89-c7f71837c1b4",
+			"id": "229595f4-ad6e-4de3-b4db-3bfd76687f97",
 			"key": "PORTAL_API_KEY",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "af5eeefb-ae87-4ac0-b975-0cfd0d44ded0",
+			"id": "24614e39-6531-4fa2-ac42-eddc54d29aaf",
 			"key": "TOKEN_ID",
 			"value": "",
 			"type": "string"
