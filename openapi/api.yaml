@@ -9,6 +9,9 @@ servers:
   variables: {}
 paths:
   /login:
+    parameters:
+      - $ref: '#/components/parameters/ContentType'
+      - $ref: '#/components/parameters/Accept'
     post:
       tags:
       - Authentication
@@ -18,16 +21,6 @@ paths:
         A successful response includes a time-limited Bearer token to be included in the Authorization header on subsequent requests.
         This endpoint is mainly intended for use by web applications, which would store the token for use during the user's logged-in session. (When the token expires, requests will recieve 401 responses.) For general API usage, an api token should be used instead. @see api-token:add
       operationId: Login
-      parameters:
-      - name: Accept
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
       requestBody:
         description: ''
         content:
@@ -56,7 +49,7 @@ paths:
         401:
           description: Incorrect username or password.
         403:
-          description: User cannot log in as requested client
+          $ref: '#/components/responses/Forbidden'
       deprecated: false
   /user/self:
     get:
@@ -84,11 +77,14 @@ paths:
                   resources:
                     $ref: '#/components/schemas/UserResources'
         401:
-          description: Not logged in.
+          $ref: '#/components/responses/AuthenticationError'
         403:
-          description: Insufficient permissions.
+          $ref: '#/components/responses/Forbidden'
       deprecated: false
   /api-token:
+    parameters:
+      - $ref: '#/components/parameters/ContentType'
+      - $ref: '#/components/parameters/Accept'
     post:
       tags:
       - API Tokens
@@ -98,16 +94,6 @@ paths:
         The new api token is returned in the response payload. 
         This is the only time it will be accessible to the user; it will never be displayed again.
       operationId: CreateAPIToken
-      parameters:
-      - name: Accept
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
       requestBody:
         description: ''
         content:
@@ -135,7 +121,7 @@ paths:
         401:
           description: Invalid username or password.
         422:
-          description: Missing field.
+          $ref: '#/components/responses/ValidationError'
       deprecated: false
     get:
       tags:
@@ -144,24 +130,6 @@ paths:
       description: Lists api tokens that belong to the logged-in user.
       operationId: ListAPITokens
       parameters:
-      - name: Content-Type
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
-      - name: Accept
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
       - $ref: '#/components/parameters/page'
       - $ref: '#/components/parameters/pageSize'
       - $ref: '#/components/parameters/sortOrder'
@@ -184,38 +152,22 @@ paths:
                 items:
                   $ref: '#/components/schemas/APIToken'
         401:
-          description: Not logged in.
+          $ref: '#/components/responses/AuthenticationError'
         416:
-          description: Bad range/page number/page size.
+          $ref: '#/components/responses/RangeError'
         422:
-          description: Invalid input.
+          $ref: '#/components/responses/ValidationError'
       deprecated: false
   /api-token/{token_id}:
+    parameters:
+      - $ref: '#/components/parameters/ContentType'
+      - $ref: '#/components/parameters/Accept'
     get:
       tags:
       - API Tokens
       summary: Get API Token
       description: Shows an api token.
       operationId: GetAPIToken
-      parameters:
-      - name: Content-Type
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
-      - name: Accept
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
       responses:
         200:
           description: 'Successfully retrieved API Token.'
@@ -224,9 +176,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/APIToken'
         401:
-          description: Not logged in.
+          $ref: '#/components/responses/AuthenticationError'
         404:
-          description: API Token not found.
+          $ref: '#/components/responses/NotFound'
       deprecated: false
     post:
       tags:
@@ -236,16 +188,6 @@ paths:
         Edits an api token.
         Edit requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task. @see task:show.
       operationId: UpdateAPIToken
-      parameters:
-      - name: Accept
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
       requestBody:
         description: ''
         content:
@@ -264,9 +206,9 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/Operation'
         401:
-          description: Not logged in.
+          $ref: '#/components/responses/AuthenticationError'
         404:
-          description: API Token not found.
+          $ref: '#/components/responses/NotFound'
       deprecated: false
     delete:
       tags:
@@ -276,25 +218,6 @@ paths:
         Edits an api token.
         Edit requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task. @see task:show.
       operationId: DeleteAPIToken
-      parameters:
-      - name: Content-Type
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
-      - name: Accept
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
       responses:
         202:
           description: Successfully deleting API Token.
@@ -303,11 +226,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Operation'
         401:
-          description: Not logged in.
+          $ref: '#/components/responses/AuthenticationError'
         404:
-          description: API Token not found.
+          $ref: '#/components/responses/NotFound'
       deprecated: false
   /cloud-account:
+    parameters:
+      - $ref: '#/components/parameters/ContentType'
+      - $ref: '#/components/parameters/Accept'
     post:
       tags:
       - Cloud Accounts
@@ -316,16 +242,6 @@ paths:
         Creates a new cloud account and orders an associated service.
         Add requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task. @see task:show.
       operationId: CreateCloudAccount
-      parameters:
-      - name: Accept
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
       requestBody:
         description: ''
         content:
@@ -348,11 +264,11 @@ paths:
                     type: string
                     example: cloud-account:add (pending)
         401:
-          description: Not logged in
+          $ref: '#/components/responses/AuthenticationError'
         403:
-          description: Insufficient Permissions
+          $ref: '#/components/responses/Forbidden'
         422:
-          description: Invalid Inputs
+          $ref: '#/components/responses/ValidationError'
       deprecated: false
     get:
       post:
@@ -362,19 +278,10 @@ paths:
       description: Lists a client's cloud accounts.
       operationId: ListCloudAccounts
       parameters:
-      - name: Accept
-        in: header
-        description: ''
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-          example: application/json
-      - $ref: '#/components/parameters/page'
-      - $ref: '#/components/parameters/pageSize'
-      - $ref: '#/components/parameters/sortOrder'
-      - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+        - $ref: '#/components/parameters/sortOrder'
+        - $ref: '#/components/parameters/sortBy'
       responses:
         200:
           description: Successfully retrieved clound accounts.
@@ -385,11 +292,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/CloudAccount'
         401:
-          description: Not logged in
+          $ref: '#/components/responses/AuthenticationError'
         403:
-          description: Insufficient Permissions
+          $ref: '#/components/responses/Forbidden'
         416:
-          description: Bad range/page number/page size
+          $ref: '#/components/responses/RangeError'
       deprecated: false
 components:
   parameters:
@@ -422,6 +329,26 @@ components:
       description: Field to sort by.
       in: query
       example: name
+    ContentType:
+      name: Content-Type
+      in: header
+      description: ''
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        example: application/json
+    Accept:
+      name: Accept
+      in: header
+      description: ''
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        example: application/json
   schemas:
     CloudAccount:
       type: object
@@ -767,6 +694,17 @@ components:
     httpBearer:
       type: http
       scheme: bearer
+  responses:
+    AuthenticationError:
+      description: Not logged in
+    Forbidden:
+      description: Insufficient permissions
+    ValidationError:
+      description: Invalid input
+    NotFound:
+      description: Resource not found
+    RangeError:
+      description: Bad range (page number/size)
 security:
 - httpBearer: []
 tags:
