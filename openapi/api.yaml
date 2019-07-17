@@ -97,7 +97,7 @@ paths:
         Creates a new api token. 
         The new api token is returned in the response payload. 
         This is the only time it will be accessible to the user; it will never be displayed again.
-      operationId: CreateApiToken
+      operationId: CreateAPIToken
       parameters:
       - name: Accept
         in: header
@@ -123,7 +123,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/APIToken'
+                allOf:
+                  - $ref: '#/components/schemas/APIToken'
+                  - type: object
+                    properties:
+                      token:
+                        type: string
+                        example: VGFjb3MgYXJlIGRlbGljaW91cwo=
+                        description: The name of the API token.
+
         401:
           description: Invalid username or password.
         422:
@@ -134,7 +142,7 @@ paths:
       - API Tokens
       summary: List API Tokens
       description: Lists api tokens that belong to the logged-in user.
-      operationId: ListApiTokens
+      operationId: ListAPITokens
       parameters:
       - name: Content-Type
         in: header
@@ -188,7 +196,7 @@ paths:
       - API Tokens
       summary: Get API Token
       description: Shows an api token.
-      operationId: GetApiToken
+      operationId: GetAPIToken
       parameters:
       - name: Content-Type
         in: header
@@ -210,8 +218,15 @@ paths:
           example: application/json
       responses:
         200:
-          description: ''
-          headers: {}
+          description: 'Successfully retrieved API Token.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIToken'
+        401:
+          description: Not logged in.
+        404:
+          description: API Token not found.
       deprecated: false
     post:
       tags:
@@ -220,7 +235,7 @@ paths:
       description: >-
         Edits an api token.
         Edit requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task. @see task:show.
-      operationId: UpdateApiToken
+      operationId: UpdateAPIToken
       parameters:
       - name: Accept
         in: header
@@ -241,9 +256,17 @@ paths:
               name: test-name
         required: true
       responses:
-        200:
-          description: ''
-          headers: {}
+        202:
+          description: Successfully updating API Token.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Operation'
+        401:
+          description: Not logged in.
+        404:
+          description: API Token not found.
       deprecated: false
     delete:
       tags:
@@ -252,7 +275,7 @@ paths:
       description: >-
         Edits an api token.
         Edit requests are queued, meaning they will be completed out-of-band from the current request. The response payload will describe the requested task, and will also include a Location header that can be polled to determine the status of the task. @see task:show.
-      operationId: DeleteApiToken
+      operationId: DeleteAPIToken
       parameters:
       - name: Content-Type
         in: header
@@ -273,9 +296,16 @@ paths:
           type: string
           example: application/json
       responses:
-        200:
-          description: ''
-          headers: {}
+        202:
+          description: Successfully deleting API Token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Operation'
+        401:
+          description: Not logged in.
+        404:
+          description: API Token not found.
       deprecated: false
   /cloud-account:
     post:
@@ -617,7 +647,7 @@ components:
           description: Identity of the client.
     APIToken:
       type: object
-      propterties:
+      properties:
         id:
           type: integer
           example: 16
@@ -630,10 +660,43 @@ components:
           type: string
           example: chuck
           description: The name of the API token.
-        token:
+    Operation:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 0
+        identity:
           type: string
-          example: VGFjb3MgYXJlIGRlbGljaW91cwo=
-          description: The name of the API token.
+          example: "api-token:edit (pending)"
+        uuid:
+          type: string
+          format: uuid
+          example: "34595a2b-40b8-4021-9f0d-6f3e96c8462a"
+        action:
+          type: string
+          example: "api-token:edit"
+        status:
+          type: enum
+          example: pending
+          enum:
+            - pending
+        request_date:
+          type: integer
+          example: 1562959696
+        resource_uri:
+          type: string
+        staff_user:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 27767
+            identity:
+              type: string
+              example: "Annabel Whyman - user@nocworx.com"
     LoginRequest:
       title: LoginRequest
       required:
