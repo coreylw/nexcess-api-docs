@@ -94,7 +94,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/App'
+                  $ref: '#/components/schemas/Cloud'
         401:
           $ref: '#/components/responses/AuthenticationError'
         403:
@@ -482,6 +482,30 @@ components:
         version:
           type: string
           example: "1"
+    Cloud:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        identity:
+          type: string
+          example: "us-midwest-1"
+        type:
+          type: string
+          example: openstack
+        status:
+          type: string
+          example: active
+        location:
+          type: string
+          example: "Southfield, MI"
+        location_code:
+          type: string
+          example: "us-midwest-1"
+        country:
+          type: string
+          example: US
     CloudAccount:
       type: object
       properties:
