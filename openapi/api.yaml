@@ -5,9 +5,46 @@ info:
   contact: {}
   version: '1.0'
 servers:
-- url: https://v1
+- url: https://https://portal.ux1.nxswd.net/api/v1
   variables: {}
 paths:
+  /app:
+    get:
+      tags:
+      - Apps
+      summary: List Apps
+      description: Lists apps available for cloud accounts.
+      operationId: ListApps
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+        - $ref: '#/components/parameters/sortOrder'
+        - $ref: '#/components/parameters/sortBy'
+        - name: filter
+          in: query
+          schema:
+            type: enum
+            example: name
+            items:
+              - name
+              - version
+      responses:
+        200:
+          description: Got a current API User.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/App'
+        401:
+          $ref: '#/components/responses/AuthenticationError'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        416:
+          $ref: '#/components/responses/RangeError'
+        422:
+          $ref: '#/components/responses/ValidationError'
   /login:
     parameters:
       - $ref: '#/components/parameters/ContentType'
@@ -328,7 +365,14 @@ components:
       name: sortBy
       description: Field to sort by.
       in: query
-      example: name
+      schema:
+        type: enum
+        example: id
+        items:
+          - id
+          - name
+          - type 
+          - version
     ContentType:
       name: Content-Type
       in: header
@@ -350,6 +394,21 @@ components:
         type: string
         example: application/json
   schemas:
+    App:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 0
+        identity:
+          type: string
+          example: "BigCommerce for WordPress 1"
+        name:
+          type: string
+          example: "BigCommerce for WordPress"
+        version:
+          type: string
+          example: "1"
     CloudAccount:
       type: object
       properties:

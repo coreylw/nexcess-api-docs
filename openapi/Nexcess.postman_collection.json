@@ -429,6 +429,178 @@
 					}
 				]
 			}
+		},
+		{
+			"name": "Cloud",
+			"item": [
+				{
+					"name": "List Clouds",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PORTAL_API_URL}}/v1/cloud",
+							"host": [
+								"{{PORTAL_API_URL}}"
+							],
+							"path": [
+								"v1",
+								"cloud"
+							]
+						},
+						"description": "Lists available cloud hosting installations."
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c245e3fd-76c7-42a8-a391-d6c5ef8f72fd",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "198e53a6-410c-4491-9961-f69d58d2b05c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Package",
+			"item": [
+				{
+					"name": "List Packages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PORTAL_API_URL}}/v1/package",
+							"host": [
+								"{{PORTAL_API_URL}}"
+							],
+							"path": [
+								"v1",
+								"package"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Package",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PORTAL_API_URL}}/v1/package/{{PACKAGE_ID}}",
+							"host": [
+								"{{PORTAL_API_URL}}"
+							],
+							"path": [
+								"v1",
+								"package",
+								"{{PACKAGE_ID}}"
+							]
+						},
+						"description": "Shows package details."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "App",
+			"item": [
+				{
+					"name": "List Apps",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PORTAL_API_URL}}/v1/app",
+							"host": [
+								"{{PORTAL_API_URL}}"
+							],
+							"path": [
+								"v1",
+								"app"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"auth": {
@@ -465,31 +637,31 @@
 	],
 	"variable": [
 		{
-			"id": "475537a1-927a-4559-adad-f3568e646cce",
+			"id": "d73c807b-6af3-4fc8-895d-ade6fc78caab",
 			"key": "PORTAL_API_URL",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "66b3bc9a-698c-4f29-9dbe-87e3c0325209",
+			"id": "bbad1a11-0ffd-4eca-b0d7-c5ee2cb9b34b",
 			"key": "USERNAME",
 			"value": "user@example.com",
 			"type": "string"
 		},
 		{
-			"id": "da04c066-e09f-4484-85b5-433c0fc8d76e",
+			"id": "2190a7bf-89af-412b-be31-0bfa4061ae47",
 			"key": "PASSWORD",
 			"value": "KlaatuBaradaNikto",
 			"type": "string"
 		},
 		{
-			"id": "229595f4-ad6e-4de3-b4db-3bfd76687f97",
+			"id": "7e81ec5d-6551-4f30-a6ca-a3b73aa6a8ba",
 			"key": "PORTAL_API_KEY",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "24614e39-6531-4fa2-ac42-eddc54d29aaf",
+			"id": "086e3013-328e-4688-9709-4891fd946bdc",
 			"key": "TOKEN_ID",
 			"value": "",
 			"type": "string"
