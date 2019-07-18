@@ -9,6 +9,9 @@ servers:
   variables: {}
 paths:
   /app:
+    parameters:
+      - $ref: '#/components/parameters/ContentType'
+      - $ref: '#/components/parameters/Accept'
     get:
       tags:
       - Apps
@@ -40,7 +43,7 @@ paths:
               - version
       responses:
         200:
-          description: Got a current API User.
+          description: Successfully retrieved apps.
           content:
             application/json:
               schema:
@@ -56,6 +59,9 @@ paths:
         422:
           $ref: '#/components/responses/ValidationError'
   /cloud:
+    parameters:
+      - $ref: '#/components/parameters/ContentType'
+      - $ref: '#/components/parameters/Accept'
     get:
       tags:
       - Clouds
@@ -88,7 +94,7 @@ paths:
               - country
       responses:
         200:
-          description: Got a current API User.
+          description: Successfully retrieved clouds.
           content:
             application/json:
               schema:
@@ -103,6 +109,81 @@ paths:
           $ref: '#/components/responses/RangeError'
         422:
           $ref: '#/components/responses/ValidationError'
+  /package:
+    parameters:
+      - $ref: '#/components/parameters/ContentType'
+      - $ref: '#/components/parameters/Accept'
+    get:
+      tags:
+      - Packages
+      summary: List Packages
+      description: Lists available packages (typically, of a particular type).
+      operationId: ListPackages
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+        - $ref: '#/components/parameters/sortOrder'
+        - name: sortBy
+          description: Field to sort by.
+          in: query
+          schema:
+            type: enum
+            example: id
+            items:
+              - id
+              - name
+              - monthly_fee 
+        - name: filter
+          in: query
+          schema:
+            type: enum
+            example: type
+            items:
+              - type
+              - name
+              - monthly_fee
+      responses:
+        200:
+          description: Successfully retrieved packages.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Package'
+        401:
+          $ref: '#/components/responses/AuthenticationError'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        416:
+          $ref: '#/components/responses/RangeError'
+        422:
+          $ref: '#/components/responses/ValidationError'
+  /package/{package_id}:
+    parameters:
+      - $ref: '#/components/parameters/ContentType'
+      - $ref: '#/components/parameters/Accept'
+    get:
+      tags:
+      - Packages
+      summary: Get Package
+      description: Shows a Package.
+      operationId: GetPackage
+      responses:
+        200:
+          description: 'Successfully retrieved Package.'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Package'
+        401:
+          $ref: '#/components/responses/AuthenticationError'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+      deprecated: false
   /login:
     parameters:
       - $ref: '#/components/parameters/ContentType'
@@ -482,6 +563,53 @@ components:
         version:
           type: string
           example: "1"
+    Package:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 707
+        identity:
+          type: string
+          example: "nc.xsmall"
+        name:
+          type: string
+          example: "nc.xsmall"
+        monthly_fee:
+          type: string
+          example: "29.00"
+        type:
+          type: string
+          example: "virt-guest-cloud"
+        configuration:
+          type: object
+          properties:
+            packagetemplate:
+              type: string
+              example: "nc_xsmall"
+            environment:
+              type: object
+              properties:
+                hardware:
+                  type: object
+                  properties:
+                    servers:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          role:
+                            type: string
+                            example: cloudhost
+                          image:
+                            type: string
+                            example: "centos-7-x86_64-latest"
+                          flavor:
+                            type: string
+                            example: "n5s-sc-1.dev"
+                          public_ip:
+                            type: boolean
+                            example: true
     Cloud:
       type: object
       properties:
