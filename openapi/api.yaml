@@ -19,7 +19,17 @@ paths:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/pageSize'
         - $ref: '#/components/parameters/sortOrder'
-        - $ref: '#/components/parameters/sortBy'
+        - name: sortBy
+          description: Field to sort by.
+          in: query
+          schema:
+            type: enum
+            example: id
+            items:
+              - id
+              - name
+              - type
+              - version
         - name: filter
           in: query
           schema:
@@ -28,6 +38,54 @@ paths:
             items:
               - name
               - version
+      responses:
+        200:
+          description: Got a current API User.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/App'
+        401:
+          $ref: '#/components/responses/AuthenticationError'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        416:
+          $ref: '#/components/responses/RangeError'
+        422:
+          $ref: '#/components/responses/ValidationError'
+  /cloud:
+    get:
+      tags:
+      - Clouds
+      summary: List Clouds
+      description: Lists available cloud hosting installations.
+      operationId: ListClouds
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+        - $ref: '#/components/parameters/sortOrder'
+        - name: sortBy
+          description: Field to sort by.
+          in: query
+          schema:
+            type: enum
+            example: id
+            items:
+              - id
+              - location
+              - location_code 
+              - country
+        - name: filter
+          in: query
+          schema:
+            type: enum
+            example: location
+            items:
+              - location
+              - location_code
+              - country
       responses:
         200:
           description: Got a current API User.
@@ -170,7 +228,15 @@ paths:
       - $ref: '#/components/parameters/page'
       - $ref: '#/components/parameters/pageSize'
       - $ref: '#/components/parameters/sortOrder'
-      - $ref: '#/components/parameters/sortBy'
+      - name: sortBy
+        description: Field to sort by.
+        in: query
+        schema:
+          type: enum
+          example: id
+          items:
+            - id
+            - name
       - name: filter
         in: query
         schema:
@@ -318,7 +384,14 @@ paths:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/pageSize'
         - $ref: '#/components/parameters/sortOrder'
-        - $ref: '#/components/parameters/sortBy'
+        - name: sortBy
+          description: Field to sort by.
+          in: query
+          schema:
+            type: enum
+            example: id
+            items:
+              - id
       responses:
         200:
           description: Successfully retrieved clound accounts.
