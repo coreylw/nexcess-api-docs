@@ -435,18 +435,36 @@
 			"item": [
 				{
 					"name": "List Clouds",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7ecccb26-97ef-416f-8bfc-591c7e6d8b75",
+								"exec": [
+									"pm.test(\"Save first cloud ID in list\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    ",
+									"    var data = pm.response.json();",
+									"    pm.environment.set(\"CLOUD_ID\", data[0].id);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							},
 							{
 								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -496,6 +514,24 @@
 			"item": [
 				{
 					"name": "List Packages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a7d09dc-eacf-4446-8b45-dc0d2af295ee",
+								"exec": [
+									"pm.test(\"Save first package ID in list\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    ",
+									"    var data = pm.response.json();",
+									"    pm.environment.set(\"PACKAGE_ID\", data[0].id);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -588,13 +624,23 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{PORTAL_API_URL}}/v1/app",
+							"raw": "{{PORTAL_API_URL}}/v1/app?page=1&pageSize=10",
 							"host": [
 								"{{PORTAL_API_URL}}"
 							],
 							"path": [
 								"v1",
 								"app"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
 							]
 						}
 					},
@@ -637,31 +683,31 @@
 	],
 	"variable": [
 		{
-			"id": "d73c807b-6af3-4fc8-895d-ade6fc78caab",
+			"id": "9f23544b-7ecf-4cdc-976e-8d16202c7166",
 			"key": "PORTAL_API_URL",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "bbad1a11-0ffd-4eca-b0d7-c5ee2cb9b34b",
+			"id": "6ae6233a-279b-4a71-994e-85820f425332",
 			"key": "USERNAME",
 			"value": "user@example.com",
 			"type": "string"
 		},
 		{
-			"id": "2190a7bf-89af-412b-be31-0bfa4061ae47",
+			"id": "2a46cf26-94b4-462b-879e-7fd9c5398277",
 			"key": "PASSWORD",
 			"value": "KlaatuBaradaNikto",
 			"type": "string"
 		},
 		{
-			"id": "7e81ec5d-6551-4f30-a6ca-a3b73aa6a8ba",
+			"id": "59bea581-5955-4cfe-ab2d-cc86d99efe99",
 			"key": "PORTAL_API_KEY",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "086e3013-328e-4688-9709-4891fd946bdc",
+			"id": "5715bb82-9673-4322-a430-f3f4a920275b",
 			"key": "TOKEN_ID",
 			"value": "",
 			"type": "string"
